@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pablo Mora Moreno | Engineer Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Colores: Dark Engineering Theme */
+            --bg-body: #0f1115;       /* Fondo General */
+            --bg-sidebar: #161b22;    /* Barra Lateral */
+            --bg-card: #1c2128;       /* Tarjetas de contenido */
+            --border: #30363d;        /* Bordes sutiles */
+            --accent: #2f81f7;        /* Azul GitHub/Técnico */
+            --accent-dim: rgba(47, 129, 247, 0.15);
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --code-text: #7ee787;     /* Verde terminal para código */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden; /* Evita scroll en el body, solo en el contenido */
+            display: flex;
+        }
+
+        /* --- 1. SIDEBAR (Navegación) --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .profile-summary { margin-bottom: 3rem; }
+        .profile-name { font-size: 1.4rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .profile-role { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent); margin-top: 5px; }
+
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
+        .nav-item.active { background-color: var(--accent-dim); color: var(--accent); font-weight: 600; }
+        .nav-item i { width: 20px; text-align: center; }
+
+        .social-links { margin-top: auto; display: flex; gap: 15px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .social-icon { color: var(--text-muted); font-size: 1.2rem; transition: 0.2s; }
+        .social-icon:hover { color: var(--text-main); }
+
+        /* --- 2. MAIN CONTENT AREA --- */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto; /* Scroll independiente */
+            padding: 3rem 4rem;
+            position: relative;
+        }
+
+        /* Ocultar todas las pestañas por defecto */
+        .tab-content { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
+        .tab-content.active-tab { display: block; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* Estilos generales de contenido */
+        h2 { font-size: 2rem; margin-bottom: 1.5rem; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-main); }
+        p { color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; max-width: 800px; }
+        
+        .code-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(110,118,129,0.2); padding: 2px 6px; border-radius: 4px; color: var(--text-main); }
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .tech-pill { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 100px; }
+
+        /* Cards Style */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); padding: 25px; border-radius: 8px; transition: 0.2s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        
+        /* Timeline Style */
+        .timeline { margin-top: 20px; border-left: 2px solid var(--border); padding-left: 30px; }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item::before { content: ''; position: absolute; left: -36px; top: 5px; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; border: 2px solid var(--bg-body); }
+        .timeline-date { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+
+        /* PhD Specifics */
+        .phd-highlight { background: linear-gradient(180deg, rgba(47,129,247,0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid var(--accent); padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+        
+        /* Library List */
+        .library-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+        .book-author { font-size: 0.9rem; color: var(--text-muted); font-style: italic; }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; padding: 1rem; border-right: none; border-bottom: 1px solid var(--border); }
+            .nav-menu { flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
+            .nav-item { white-space: nowrap; }
+            .main-content { padding: 2rem 1.5rem; overflow-y: visible; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="profile-summary">
+            <div class="profile-name">Pablo Mora Moreno</div>
+            <div class="profile-role">Electrical & Mechatronics Eng.</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+                PhD Candidate @ UMA <br>
+                Model-Free Control Specialist
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="switchTab('profile')"><i class="fas fa-user"></i> Profile</li>
+            <li class="nav-item" onclick="switchTab('phd')"><i class="fas fa-atom"></i> PhD Research</li>
+            <li class="nav-item" onclick="switchTab('experience')"><i class="fas fa-briefcase"></i> Experience</li>
+            <li class="nav-item" onclick="switchTab('projects')"><i class="fas fa-code-branch"></i> Projects</li>
+            <li class="nav-item" onclick="switchTab('library')"><i class="fas fa-book"></i> Library & Ed.</li>
+        </ul>
+
+        <div class="social-links">
+            <a href="https://linkedin.com/in/tu-perfil" target="_blank" class="social-icon"><i class="fab fa-linkedin"></i></a>
+            <a href="mailto:tuemail@ejemplo.com" class="social-icon"><i class="fas fa-envelope"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <div id="tab-profile" class="tab-content active-tab">
+            <h2>About Me</h2>
+            <p>
+                I am an <strong>Electrical Engineer with a Master's in Mechatronics</strong>, currently pursuing a PhD in model-free predictive control for multiphase electric machines[cite: 5]. 
+                With nearly three years of experience in developing high-performance control strategies for electric drives, I am passionate about innovation in the automotive, aerospace, and robotics sectors[cite: 6].
+            </p>
+            <p>
+                My approach combines rigorous mathematical modeling with hands-on hardware implementation. I specialize in embedded systems, simulation (MATLAB/Simulink), and hardware integration for power electronics[cite: 9].
+            </p>
+
+            <h3 style="margin-top: 2rem;">Core Competencies</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <i class="fas fa-microchip" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                    <h3>Control & Embedded</h3>
+                    <p style="font-size: 0.9rem;">Model Predictive Control (MPC), FOC, DTC. <br> C/C++ for TI DSPs (C2000) & STM32.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-bolt" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                    <h3>Power Electronics</h3>
+                    <p style="font-size: 0.9rem;">Inverter design, GaN applications, PCB Design (Altium), Thermal management.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-laptop-code" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                    <h3>Simulation & Tools</h3>
+                    <p style="font-size: 0.9rem;">MATLAB/Simulink, SPICE, ANSYS APDL, CATIA V5, Python (Optimization).</p>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 3rem;">Interests</h3>
+            <div class="tech-stack">
+                <span class="tech-pill">Non-linear Control</span>
+                <span class="tech-pill">Sustainable Mobility</span>
+                <span class="tech-pill">Vehicle Dynamics</span>
+                <span class="tech-pill">Fault-tolerant Design</span>
+            </div>
+        </div>
+
+        <div id="tab-phd" class="tab-content">
+            <h2>PhD Research</h2>
+            <div class="phd-highlight">
+                <h3 style="color: var(--accent);">Model-Free Predictive Control for Multiphase Machines</h3>
+                <p>
+                    Developing a novel control scheme based on gradient analysis of electric variables. 
+                    This approach removes parameter dependency, improves dynamic performance, and reduces computational burden compared to traditional MPC[cite: 58, 60].
+                </p>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3><i class="fas fa-vial"></i> Experimental Validation</h3>
+                    <p>
+                        Implementation of control strategies on a real test bed. Validation of back-EMF compensation techniques and adaptable modulation to avoid parameter usage[cite: 25, 29].
+                    </p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-server"></i> 9-Phase Control Board</h3>
+                    <p>
+                        Design of a custom modular control board featuring:
+                    </p>
+                    <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">
+                        <li>• <span class="code-tag">0.04%</span> Accuracy in voltage/current measurement[cite: 65].</li>
+                        <li>• <strong>CAN FD</strong> communication (5 Mbps)[cite: 67].</li>
+                        <li>• Sigma-delta modulation for DC-link monitoring[cite: 65].</li>
+                        <li>• FPGA/DSP integration for real-time processing.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Scientific Contribution</h3>
+                    <p>
+                        Presented at <strong>14th EDPC (Sept 2024)</strong>. Researching non-linear effects impact on control schemes to optimize designs during conceptualization[cite: 63, 68].
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-experience" class="tab-content">
+            <h2>Professional Experience</h2>
+            <div class="timeline" id="experience-list">
+                </div>
+        </div>
+
+        <div id="tab-projects" class="tab-content">
+            <h2>Engineering Projects</h2>
+            <p>A mix of self-taught initiatives, academic requirements, and competitive team developments.</p>
+            <div class="card-grid" id="projects-list">
+                 </div>
+        </div>
+
+        <div id="tab-library" class="tab-content">
+            <h2>Education</h2>
+            <div style="margin-bottom: 3rem;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="display:flex; justify-content:space-between;">
+                        Master's in Mechatronic Engineering
+                        <span class="code-tag">GPA 9.0/10</span>
+                    </h3>
+                    <p style="margin-bottom: 0;">University of Málaga (2023-2024)</p>
+                    <p style="font-size: 0.9rem;"><em>Awarded Best Academic Record Prize for the Thesis[cite: 61].</em></p>
+                </div>
+                <div>
+                    <h3 style="display:flex; justify-content:space-between;">
+                        Bachelor's in Electrical Engineering
+                        <span class="code-tag">GPA 8.9/10</span>
+                    </h3>
+                    <p>University of Málaga (2019-2023)</p>
+                </div>
+            </div>
+
+            <h2>The Library</h2>
+            <p>Curated list of technical literature and papers that form the basis of my knowledge.</p>
+            <div id="library-list" style="margin-top: 20px;">
+                </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- LOGIC: TAB SWITCHING ---
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // Show target
+            document.getElementById('tab-' + tabId).classList.add('active-tab');
+            // Highlight nav item (simple loop matching)
+            const navItems = document.querySelectorAll('.nav-item');
+            if(tabId === 'profile') navItems[0].classList.add('active');
+            if(tabId === 'phd') navItems[1].classList.add('active');
+            if(tabId === 'experience') navItems[2].classList.add('active');
+            if(tabId === 'projects') navItems[3].classList.add('active');
+            if(tabId === 'library') navItems[4].classList.add('active');
+        }
+
+        // --- DATA SOURCE (EDIT THIS) ---
+        
+        const experienceData = [
+            {
+                role: "Research Engineer in Electrical Drives",
+                company: "University of Málaga",
+                date: "Jan 2024 - Present",
+                desc: "Implemented embedded control algorithms on TI microcontrollers (C/C++) and estimated dynamic parameters using MATLAB/Python[cite: 74, 75]. Setting up a 9-phase electric drive test bed."
+            },
+            {
+                role: "Systems Engineering Automotive",
+                company: "EVO Seville (Evolution Synergetique)",
+                date: "Mar 2023 - Jan 2024",
+                desc: "Developed/Simulated control algorithms (Simulink) for fuel cell hybrid electric vehicle powertrains in compliance with Automotive SPICE regulations[cite: 82]. Optimized balance between battery capacity, fuel cell, and cooling systems."
+            },
+            {
+                role: "E-Powertrain Engineer",
+                company: "MART Málaga (Formula Student)",
+                date: "Sept 2020 - Sept 2024",
+                desc: "Developed powertrain for race cars. Designed 600V battery-powered 3-phase propulsion system. Programmed control algorithms in C for TI MCUs involving CAN, I2C, and SPI protocols[cite: 78, 79]."
+            },
+            {
+                role: "Calibration Test Engineer",
+                company: "University of Málaga",
+                date: "Jul 2025 - Aug 2025",
+                desc: "Designed test bench to calibrate LC filters for railway substations. Automated frequency profiles to obtain experimental Bode diagrams[cite: 86, 87]."
+            }
+        ];
+
+        const projectsData = [
+            {
+                title: "48V Electric Drive",
+                type: "Personal Project",
+                tags: ["GaN", "C/C++", "MPC"],
+                desc: "Self-taught development of a 48V battery-powered 3-phase drive. Features sensorless MPC with Maximum Torque Per Ampere (MTPA) and Field Weakening, running on TI MCU[cite: 97]."
+            },
+            {
+                title: "High-Performance Servo Drive",
+                type: "Ongoing",
+                tags: ["STM32", "Robotics", "Hardware"],
+                desc: "6kW PMSM system with GaN converter and custom battery. Controlled by STM32, designed for high precision and power density in robotic articulations (125 cm³ package)[cite: 101, 102]."
+            },
+            {
+                title: "WiFi-Controlled Rover",
+                type: "Personal Project",
+                tags: ["IoT", "MATLAB", "Arduino"],
+                desc: "Rover controlled via WiFi/BLE using MATLAB/Simulink. Supports over-the-air code loading and system monitoring[cite: 99]."
+            },
+             {
+                title: "Fault Detection Algorithms",
+                type: "Research Scholarship",
+                tags: ["Signal Processing", "Python"],
+                desc: "Developed simulation-based techniques (Wavelet, Stockwell transforms) to detect faults in multiphase electric drives[cite: 84, 85]."
+            }
+        ];
+
+        const libraryData = [
+            { title: "Electric Machinery Fundamentals", author: "Chapman" },
+            { title: "Model Predictive Control", author: "Camacho & Bordons" },
+            { title: "Vehicle Dynamics", author: "Gillespie" },
+            { title: "Power Electronics: Converters, Applications, and Design", author: "Mohan / Undeland" },
+            { title: "Modern Power Electronics and AC Drives", author: "B.K. Bose" },
+            // AÑADE MÁS LIBROS AQUÍ
+        ];
+
+        // --- RENDER FUNCTIONS ---
+        
+        function renderContent() {
+            // Exp
+            const expContainer = document.getElementById('experience-list');
+            experienceData.forEach(item => {
+                expContainer.innerHTML += `
+                <div class="timeline-item">
+                    <div class="timeline-date">${item.date}</div>
+                    <h3>${item.role} <span style="font-size:0.9rem; color:var(--accent); font-weight:400;">@ ${item.company}</span></h3>
+                    <p>${item.desc}</p>
+                </div>`;
+            });
+
+            // Projects
+            const projContainer = document.getElementById('projects-list');
+            projectsData.forEach(item => {
+                let tagsHTML = item.tags.map(t => `<span class="tech-pill">${t}</span>`).join('');
+                projContainer.innerHTML += `
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <h3>${item.title}</h3>
+                        <span class="code-tag">${item.type}</span>
+                    </div>
+                    <div class="tech-stack">${tagsHTML}</div>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">${item.desc}</p>
+                </div>`;
+            });
+
+            // Library
+            const libContainer = document.getElementById('library-list');
+            libraryData.forEach(item => {
+                libContainer.innerHTML += `
+                <div class="library-item">
+                    <span style="font-weight: 600; color: var(--text-main);">${item.title}</span>
+                    <span class="book-author">${item.author}</span>
+                </div>`;
+            });
+        }
+
+        // Init
+        renderContent();
+
+    </script>
+</body>
+</html>
