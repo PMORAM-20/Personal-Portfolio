@@ -117,6 +117,53 @@
             .main-content { padding: 2rem 1.5rem; overflow-y: visible; }
             .card-grid { grid-template-columns: 1fr; }
         }
+
+        /* --- NUEVOS ESTILOS PARA EL SIDEBAR JERÁRQUICO --- */
+        .nav-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        .nav-group-header:hover { color: var(--text-main); background: rgba(255,255,255,0.03); }
+        .nav-group-header i.fa-chevron-down { font-size: 0.7rem; transition: transform 0.3s; }
+
+        /* Cuando el grupo está abierto, rotamos la flecha */
+        .nav-group.open .nav-group-header { color: var(--text-main); }
+        .nav-group.open .nav-group-header i.fa-chevron-down { transform: rotate(180deg); }
+
+        /* Contenedor de los sub-items (oculto por defecto) */
+        .nav-sub-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            padding-left: 10px; /* Indentación para jerarquía */
+        }
+
+        /* Sub-items individuales */
+        .nav-sub-item {
+            padding: 8px 15px 8px 32px; /* Más indentación a la izquierda */
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: block;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: 0.2s;
+            position: relative;
+        }
+        .nav-sub-item:hover { color: var(--accent); background: rgba(47, 129, 247, 0.05); }
+
+        /* Línea vertical guía para la jerarquía (toque elegante tipo VS Code) */
+        .nav-sub-menu { border-left: 1px solid rgba(255,255,255,0.05); margin-left: 15px; }
+
+        /* Estado activo para sub-items */
+        .nav-sub-item.active { color: var(--accent); font-weight: 600; background: var(--accent-dim); }
     </style>
 </head>
 <body>
@@ -132,11 +179,48 @@
         </div>
 
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="switchTab('profile')"><i class="fas fa-user"></i> Profile</li>
-            <li class="nav-item" onclick="switchTab('phd')"><i class="fas fa-atom"></i> PhD Research</li>
-            <li class="nav-item" onclick="switchTab('experience')"><i class="fas fa-briefcase"></i> Experience</li>
-            <li class="nav-item" onclick="switchTab('projects')"><i class="fas fa-code-branch"></i> Projects</li>
-            <li class="nav-item" onclick="switchTab('library')"><i class="fas fa-book"></i> Library & Ed.</li>
+            <li class="nav-item active" onclick="switchTab('profile', this)">
+                <i class="fas fa-user"></i> Profile
+            </li>
+            
+            <li class="nav-group" id="group-phd">
+                <div class="nav-group-header" onclick="toggleGroup('group-phd')">
+                    <span style="display:flex; gap:12px; align-items:center;">
+                        <i class="fas fa-atom"></i> PhD Research
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="nav-sub-menu">
+                    <a class="nav-sub-item" onclick="switchTab('phd-overview', this)">Overview</a>
+                    <a class="nav-sub-item" onclick="loadProjectDetail('phd-board', this)">9-Phase Control Board</a>
+                    <a class="nav-sub-item" onclick="loadProjectDetail('phd-papers', this)">Publications</a>
+                </div>
+            </li>
+
+            <li class="nav-item" onclick="switchTab('experience', this)">
+                <i class="fas fa-briefcase"></i> Experience
+            </li>
+
+            <li class="nav-group" id="group-projects">
+                <div class="nav-group-header" onclick="toggleGroup('group-projects')">
+                    <span style="display:flex; gap:12px; align-items:center;">
+                        <i class="fas fa-code-branch"></i> Projects
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="nav-sub-menu">
+                    <a class="nav-sub-item" onclick="switchTab('projects', this)">All Projects</a>
+                    
+                    <a class="nav-sub-item" onclick="loadProjectDetail('proj-48v', this)">48V Electric Drive</a>
+                    <a class="nav-sub-item" onclick="loadProjectDetail('proj-rover', this)">WiFi Rover</a>
+                    <a class="nav-sub-item" onclick="loadProjectDetail('proj-servo', this)">Servo Drive (Robotics)</a>
+                    <a class="nav-sub-item" onclick="loadProjectDetail('proj-fault', this)">Fault Detection</a>
+                </div>
+            </li>
+
+            <li class="nav-item" onclick="switchTab('library', this)">
+                <i class="fas fa-book"></i> Library & Ed.
+            </li>
         </ul>
 
         <div class="social-links">
@@ -267,23 +351,67 @@
 
     <script>
         // --- LOGIC: TAB SWITCHING ---
-        function switchTab(tabId) {
-            // Hide all contents
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
-            // Remove active class from nav items
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        // --- LOGIC: SIDEBAR & NAVIGATION ---
+
+        // 1. Función para abrir/cerrar carpetas (Acordeón)
+        function toggleGroup(groupId) {
+            const group = document.getElementById(groupId);
+            const subMenu = group.querySelector('.nav-sub-menu');
             
-            // Show target
-            document.getElementById('tab-' + tabId).classList.add('active-tab');
-            // Highlight nav item (simple loop matching)
-            const navItems = document.querySelectorAll('.nav-item');
-            if(tabId === 'profile') navItems[0].classList.add('active');
-            if(tabId === 'phd') navItems[1].classList.add('active');
-            if(tabId === 'experience') navItems[2].classList.add('active');
-            if(tabId === 'projects') navItems[3].classList.add('active');
-            if(tabId === 'library') navItems[4].classList.add('active');
+            // Toggle clase 'open' para rotar la flecha
+            group.classList.toggle('open');
+            
+            // Animación de altura (slide down/up)
+            if (group.classList.contains('open')) {
+                subMenu.style.maxHeight = subMenu.scrollHeight + "px";
+            } else {
+                subMenu.style.maxHeight = "0";
+            }
         }
 
+        // 2. Función para cambiar pestañas principales (Nivel Superior)
+        function switchTab(tabId, element) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
+            
+            // Quitar active de todos los items (tanto padres como hijos)
+            document.querySelectorAll('.nav-item, .nav-sub-item').forEach(el => el.classList.remove('active'));
+            
+            // Mostrar contenido target (Si existe)
+            // Nota: 'phd-overview' mapea al div 'tab-phd' original por ahora
+            let targetId = 'tab-' + tabId;
+            if(tabId === 'phd-overview') targetId = 'tab-phd'; 
+            
+            const targetContent = document.getElementById(targetId);
+            if(targetContent) {
+                targetContent.classList.add('active-tab');
+            }
+
+            // Marcar activo el elemento clickado
+            if(element) element.classList.add('active');
+        }
+
+        // 3. PREPARACIÓN FUTURA: Cargar detalle de proyecto
+        // Esta función la desarrollaremos a fondo en el siguiente paso
+        function loadProjectDetail(projectId, element) {
+            // Por ahora, reutilizamos la lógica de marcar activo en el menú
+            document.querySelectorAll('.nav-item, .nav-sub-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            console.log("Cargando detalle del proyecto:", projectId);
+            
+            // AQUÍ ES DONDE MAÑANA CREAREMOS LA MAGIA DE GENERAR EL HTML
+            // DEL PROYECTO DINÁMICAMENTE.
+            // Por hoy, abriremos la pestaña de 'projects' como fallback
+            if(projectId.includes('phd')) {
+                document.getElementById('tab-phd').classList.add('active-tab');
+            } else {
+                document.getElementById('tab-projects').classList.add('active-tab');
+            }
+            
+            // (Opcional) Scroll al inicio
+            document.querySelector('.main-content').scrollTop = 0;
+        }
         // --- DATA SOURCE (EDIT THIS) ---
         
         const experienceData = [
