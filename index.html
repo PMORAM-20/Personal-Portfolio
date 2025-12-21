@@ -164,10 +164,75 @@
 
         /* Estado activo para sub-items */
         .nav-sub-item.active { color: var(--accent); font-weight: 600; background: var(--accent-dim); }
+        /* --- ESTILOS ESPECÍFICOS DEL PERFIL --- */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 3fr 2fr; /* Texto ocupa más, Foto ocupa menos */
+            gap: 40px;
+            align-items: start;
+        }
+
+        .profile-bio {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .profile-bio p { margin-bottom: 20px; }
+        .profile-bio strong { color: var(--text-main); font-weight: 600; }
+
+        .profile-photo-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .profile-photo {
+            width: 280px;
+            height: 280px;
+            object-fit: cover; /* Recorta la foto sin deformarla */
+            border-radius: 20px; /* Bordes redondeados modernos */
+            border: 2px solid var(--border);
+            box-shadow: 20px 20px 0px rgba(47, 129, 247, 0.1); /* Efecto sombra sólida tech */
+            transition: transform 0.3s ease;
+        }
+
+        .profile-photo:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: 25px 25px 0px rgba(47, 129, 247, 0.2);
+            border-color: var(--accent);
+        }
+
+        /* Fila de Estadísticas (Resumen de progreso) */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .stat-item:hover { border-color: var(--accent); background: rgba(47, 129, 247, 0.05); }
+        .stat-number { font-family: 'JetBrains Mono'; font-size: 1.8rem; color: #fff; font-weight: 700; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .profile-container { grid-template-columns: 1fr; } /* Una columna en móvil */
+            .profile-photo-wrapper { order: -1; margin-bottom: 30px; } /* Foto arriba */
+        }
     </style>
 </head>
 <body>
-
     <aside class="sidebar">
         <div class="profile-summary">
             <div class="profile-name">Pablo Mora Moreno</div>
@@ -231,43 +296,7 @@
     </aside>
 
     <main class="main-content">
-
-        <div id="tab-profile" class="tab-content active-tab">
-            <h2>About Me</h2>
-            <p>
-                I am an <strong>Electrical Engineer with a Master's in Mechatronics</strong>, currently pursuing a PhD in model-free predictive control for multiphase electric machines[cite: 5]. 
-                With nearly three years of experience in developing high-performance control strategies for electric drives, I am passionate about innovation in the automotive, aerospace, and robotics sectors[cite: 6].
-            </p>
-            <p>
-                My approach combines rigorous mathematical modeling with hands-on hardware implementation. I specialize in embedded systems, simulation (MATLAB/Simulink), and hardware integration for power electronics[cite: 9].
-            </p>
-
-            <h3 style="margin-top: 2rem;">Core Competencies</h3>
-            <div class="card-grid">
-                <div class="card">
-                    <i class="fas fa-microchip" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                    <h3>Control & Embedded</h3>
-                    <p style="font-size: 0.9rem;">Model Predictive Control (MPC), FOC, DTC. <br> C/C++ for TI DSPs (C2000) & STM32.</p>
-                </div>
-                <div class="card">
-                    <i class="fas fa-bolt" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                    <h3>Power Electronics</h3>
-                    <p style="font-size: 0.9rem;">Inverter design, GaN applications, PCB Design (Altium), Thermal management.</p>
-                </div>
-                <div class="card">
-                    <i class="fas fa-laptop-code" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                    <h3>Simulation & Tools</h3>
-                    <p style="font-size: 0.9rem;">MATLAB/Simulink, SPICE, ANSYS APDL, CATIA V5, Python (Optimization).</p>
-                </div>
-            </div>
-            
-            <h3 style="margin-top: 3rem;">Interests</h3>
-            <div class="tech-stack">
-                <span class="tech-pill">Non-linear Control</span>
-                <span class="tech-pill">Sustainable Mobility</span>
-                <span class="tech-pill">Vehicle Dynamics</span>
-                <span class="tech-pill">Fault-tolerant Design</span>
-            </div>
+    <div id="tab-profile" class="tab-content active-tab">
         </div>
 
         <div id="tab-phd" class="tab-content">
@@ -350,6 +379,70 @@
     </main>
 
     <script>
+
+        // --- 1. DATOS DEL PERFIL (Tu Historia) ---
+        const profileData = {
+            // Info Básica
+            name: "Pablo Mora Moreno",
+            title: "PhD Candidate | Electrical & Mechatronics Engineer",
+            image: "assets/img/pmm_provisional.png", // <--- ASEGÚRATE DE CREAR ESTA RUTA
+            
+            // Tu biografía dividida en párrafos para que sea legible
+            bio: [
+                "<strong>Who am I?</strong> I am an Electrical Engineer driven by the precision of mathematics and the reality of hardware. Currently pursuing a <strong>PhD in Model-Free Predictive Control</strong>, I specialize in taming complex multiphase electric machines without relying on fragile system parameters.",
+                
+                "<strong>The Journey:</strong> My path wasn't linear. I started in <strong>Mechanical & Automotive Engineering</strong>, fascinated by vehicle dynamics. However, I realized the future lay in the 'brain' of the vehicle, so I pivoted to Electrical Engineering and later a Master's in Mechatronics. This hybrid background allows me to understand the system as a whole—from the mechanical shaft to the embedded C code.",
+                
+                "<strong>What defines me?</strong> I don't just simulate; I build. From designing <strong>600V powertrains for Formula Student</strong> racing cars to developing custom 9-phase control boards with FPGA integration. I thrive in the intersection of Power Electronics, Embedded Control, and Real-Time Systems.",
+                
+                "<strong>Curiosities:</strong> Obsessed with efficiency and 'clean' solutions. When I'm not tuning a Kalman Filter, I'm likely analyzing telemetry data from race cars or optimizing code to save a few microseconds in an interruption routine."
+            ],
+
+            // El "Progreso Resumido" que pediste
+            stats: [
+                { number: "4+", label: "Years Experience" },
+                { number: "9", label: "Phases Controlled" }, // Guiño técnico a tu tesis
+                { number: "Top 1", label: "Master's Class" },
+                { number: "100%", label: "Model-Free" }
+            ]
+        };
+
+        // --- FUNCIÓN DE RENDERIZADO DEL PERFIL ---
+        function renderProfile() {
+            const container = document.getElementById('tab-profile');
+            
+            // 1. Construimos los párrafos de texto
+            const bioHTML = profileData.bio.map(p => `<p>${p}</p>`).join('');
+
+            // 2. Construimos las cajitas de estadísticas
+            const statsHTML = profileData.stats.map(s => `
+                <div class="stat-item">
+                    <div class="stat-number">${s.number}</div>
+                    <div class="stat-label">${s.label}</div>
+                </div>
+            `).join('');
+
+            // 3. Inyectamos todo el HTML estructurado
+            container.innerHTML = `
+                <h2>Profile & Background</h2>
+                
+                <div class="profile-container">
+                    <div class="profile-text">
+                        <div class="profile-bio">
+                            ${bioHTML}
+                        </div>
+                        
+                        <div class="stats-row">
+                            ${statsHTML}
+                        </div>
+                    </div>
+
+                    <div class="profile-photo-wrapper">
+                        <img src="${profileData.image}" alt="${profileData.name}" class="profile-photo">
+                    </div>
+                </div>
+            `;
+        }
         // --- LOGIC: TAB SWITCHING ---
         // --- LOGIC: SIDEBAR & NAVIGATION ---
 
@@ -518,6 +611,7 @@
         }
 
         // Init
+        renderProfile();
         renderContent();
 
     </script>
