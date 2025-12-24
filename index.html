@@ -230,6 +230,101 @@
             .profile-container { grid-template-columns: 1fr; } /* Una columna en móvil */
             .profile-photo-wrapper { order: -1; margin-bottom: 30px; } /* Foto arriba */
         }
+
+        /* --- LAYOUT NARRATIVA + TIMELINE --- */
+        .narrative-container {
+            display: grid;
+            grid-template-columns: 1fr 180px; /* Historia ancha | Timeline estrecha */
+            gap: 40px;
+            position: relative;
+        }
+
+        /* Columna Izquierda: El Texto */
+        .narrative-content {
+            padding-right: 20px;
+        }
+        /* --- CORRECCIÓN CSS NARRATIVA --- */
+        .narrative-section {
+            margin-bottom: 80px;      /* Más espacio entre capítulos para separar bien */
+            padding-top: 20px;        /* Un poco de aire arriba */
+            opacity: 0.3;             /* Inactivo: Transparente (pero visible) */
+            transform: translateX(-10px); /* Ligero desplazamiento a la izquierda */
+            transition: all 0.6s ease;    /* Transición suave de 0.6s */
+            filter: blur(1px);        /* Pequeño desenfoque a lo inactivo (opcional, queda pro) */
+        }
+
+        /* Estado ACTIVO (Cuando lo estás leyendo) */
+        .narrative-section.active-chapter {
+            opacity: 1;               /* Totalmente visible */
+            transform: translateX(0); /* Vuelve a su sitio */
+            filter: blur(0);          /* Sin desenfoque */
+        }
+
+        .narrative-text {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            text-align: justify;
+        }
+        .narrative-text p { margin-bottom: 15px; }
+
+        /* Enlaces integrados en el texto (Hyperlinks) */
+        .inline-link {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent);
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+        .inline-link:hover { background: rgba(47, 129, 247, 0.1); }
+
+        /* Columna Derecha: Timeline Sticky */
+        .timeline-sticky {
+            position: sticky;
+            top: 100px; /* Se queda fija a 100px del techo */
+            height: fit-content;
+            border-left: 2px solid var(--border);
+            padding-left: 20px;
+        }
+
+        .timeline-nav-item {
+            display: block;
+            position: relative;
+            padding: 10px 0;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            transition: 0.3s;
+            font-family: 'JetBrains Mono';
+        }
+
+        /* Los puntos de la timeline */
+        .timeline-nav-item::before {
+            content: '';
+            position: absolute;
+            left: -26px; /* Ajustado a la línea */
+            top: 18px;
+            width: 8px;
+            height: 8px;
+            background: var(--bg-body);
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        /* Estado Activo de la Timeline */
+        .timeline-nav-item.active { color: #fff; transform: translateX(5px); }
+        .timeline-nav-item.active::before { 
+            background: var(--accent); 
+            border-color: var(--accent); 
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Ajuste móvil: Desactivar efectos para facilitar lectura */
+        @media (max-width: 900px) {
+            .narrative-section { opacity: 1; transform: none; filter: none; }
+        }
     </style>
 </head>
 <body>
@@ -289,9 +384,9 @@
         </ul>
 
         <div class="social-links">
-            <a href="https://linkedin.com/in/tu-perfil" target="_blank" class="social-icon"><i class="fab fa-linkedin"></i></a>
-            <a href="mailto:tuemail@ejemplo.com" class="social-icon"><i class="fas fa-envelope"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/pablo-mora-moreno-0b7642227" target="_blank" class="social-icon"><i class="fab fa-linkedin"></i></a>
+            <a href="mailto:pmoram.w@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
+            <a href="https://github.com/PMORAM-20" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
         </div>
     </aside>
 
@@ -305,7 +400,7 @@
                 <h3 style="color: var(--accent);">Model-Free Predictive Control for Multiphase Machines</h3>
                 <p>
                     Developing a novel control scheme based on gradient analysis of electric variables. 
-                    This approach removes parameter dependency, improves dynamic performance, and reduces computational burden compared to traditional MPC[cite: 58, 60].
+                    This approach removes parameter dependency, improves dynamic performance, and reduces computational burden compared to traditional MPC.
                 </p>
             </div>
 
@@ -313,7 +408,7 @@
                 <div class="card">
                     <h3><i class="fas fa-vial"></i> Experimental Validation</h3>
                     <p>
-                        Implementation of control strategies on a real test bed. Validation of back-EMF compensation techniques and adaptable modulation to avoid parameter usage[cite: 25, 29].
+                        Implementation of control strategies on a real test bed. Validation of back-EMF compensation techniques and adaptable modulation to avoid parameter usage.
                     </p>
                 </div>
                 <div class="card">
@@ -322,16 +417,16 @@
                         Design of a custom modular control board featuring:
                     </p>
                     <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">
-                        <li>• <span class="code-tag">0.04%</span> Accuracy in voltage/current measurement[cite: 65].</li>
-                        <li>• <strong>CAN FD</strong> communication (5 Mbps)[cite: 67].</li>
-                        <li>• Sigma-delta modulation for DC-link monitoring[cite: 65].</li>
+                        <li>• <span class="code-tag">0.04%</span> Accuracy in voltage/current measurement.</li>
+                        <li>• <strong>CAN FD</strong> communication (5 Mbps).</li>
+                        <li>• Sigma-delta modulation for DC-link monitoring.</li>
                         <li>• FPGA/DSP integration for real-time processing.</li>
                     </ul>
                 </div>
                 <div class="card">
                     <h3><i class="fas fa-chart-line"></i> Scientific Contribution</h3>
                     <p>
-                        Presented at <strong>14th EDPC (Sept 2024)</strong>. Researching non-linear effects impact on control schemes to optimize designs during conceptualization[cite: 63, 68].
+                        Presented at <strong>14th EDPC (Sept 2024)</strong>. Researching non-linear effects impact on control schemes to optimize designs during conceptualization.
                     </p>
                 </div>
             </div>
@@ -359,7 +454,7 @@
                         <span class="code-tag">GPA 9.0/10</span>
                     </h3>
                     <p style="margin-bottom: 0;">University of Málaga (2023-2024)</p>
-                    <p style="font-size: 0.9rem;"><em>Awarded Best Academic Record Prize for the Thesis[cite: 61].</em></p>
+                    <p style="font-size: 0.9rem;"><em>Awarded Best Academic Record Prize for the Thesis.</em></p>
                 </div>
                 <div>
                     <h3 style="display:flex; justify-content:space-between;">
@@ -407,41 +502,165 @@
             ]
         };
 
-        // --- FUNCIÓN DE RENDERIZADO DEL PERFIL ---
+        // --- DATOS: HISTORIA DETALLADA ---
+        const narrativeData = [
+            {
+                id: "chapter-intro",
+                title: "Introduction & Vision",
+                year: "About Me",
+                content: `
+                    <p>I am Pablo Mora Moreno, an innovative Electrical Engineer with a Master's in Mechatronics and an ongoing PhD in <span class="code-font">model-free predictive control</span> for multiphase electric machines. My passion lies in advancing power electronics, electric drives, vehicles, and embedded systems. With hands-on experience in research, industry, and personal projects, I bring a blend of academic excellence and practical skills to multidisciplinary teams.</p>
+                    <p>I am eager to contribute to Europe's dynamic tech ecosystem, where innovation in sustainable mobility and electrification is thriving. My expertise focuses on developing robust, parameter-independent control strategies that enhance efficiency in electric propulsion systems.</p>`
+            },
+            {
+                id: "chapter-origin",
+                title: "The Origin",
+                year: "2018 - 2020",
+                content: `
+                    <p>My journey in engineering began in 2018 studying Mechanical Engineering at the University of Málaga. From the outset, I was drawn to systems design and dynamics. In my second year, I switched to a double degree in Mechanical and Automotive Engineering at the University of Nebrija in Madrid.</p>
+                    <p>There, I delved into vehicle dynamics and advanced 3D design using CATIA. A highlight was my contribution to the <strong>Citroneta project</strong>, where I designed a servo-actuation system incorporating a Haldex clutch to optimize the drivetrain. This taught me the value of mechanical integration but highlighted the need for a stronger electrical foundation.</p>`
+            },
+            {
+                id: "chapter-bachelor",
+                title: "Electrical Foundations",
+                year: "2020 - 2023",
+                content: `
+                    <p>I returned to UMA to pursue my Bachelor's in Electrical Engineering, graduating with a <strong>GPA of 8.9/10</strong>. My Bachelor's thesis (TFG) focused on developing optimization tools using metaheuristic techniques in Python to estimate parameters of multiphase machines from experimental data.</p>
+                    <p>During this time, I joined the electric drives laboratory, immersing myself for nearly 4 years in multiphase machines and power converters up to 1000V. These experiences directly informed my thesis and set the stage for my <a class="inline-link" onclick="switchTab('phd')">current research</a>.</p>`
+            },
+            {
+                id: "chapter-formula",
+                title: "Formula Student Era",
+                year: "2020 - 2024",
+                content: `
+                    <p>Professionally, my path accelerated when I joined the <strong>MART Málaga Formula Student team</strong> as an E-Powertrain Engineer. Over four years, I evolved powertrains from combustion analysis to a <a class="inline-link" onclick="switchTab('projects')">600V battery-powered 3-phase propulsion system</a>.</p>
+                    <p>I programmed control algorithms in C on TI microcontrollers and integrated CAN, I2C, and SPI protocols for hard-real-time control. I also defined actuation protocols for critical scenarios like over-current or wheel slipping.</p>`
+            },
+            {
+                id: "chapter-pro",
+                title: "Industry & Master's",
+                year: "2023 - 2024",
+                content: `
+                    <p>I worked at <strong>Evolution Synergetique (EVO)</strong> in Seville as a Systems Engineering Automotive specialist. There, I developed control algorithms in MATLAB/Simulink for fuel cell hybrid electric vehicle powertrains, complying with <strong>Automotive SPICE</strong> regulations.</p>
+                    <p>Simultaneously, I completed my <a class="inline-link" onclick="switchTab('library')">Master's in Mechatronic Engineering</a> (GPA 9.0/10). My thesis introduced a novel gradient-based model-free control scheme, validated experimentally, which earned me the Best Academic Record Prize.</p>`
+            },
+            {
+                id: "chapter-phd",
+                title: "PhD & Research",
+                year: "Present",
+                content: `
+                    <p>Since September 2024, I have been pursuing my PhD, focusing on <a class="inline-link" onclick="switchTab('phd')">model-free predictive controls</a> for multiphase machines. Innovations include gradient-based voltage vector selection and back-EMF compensation.</p>
+                    <p>To enable experimental testing, I am finalizing a modular <strong>9-phase control board</strong> featuring 0.04% measurement accuracy, CAN FD, and FPGA integration. This work was presented at the 14th EDPC conference.</p>`
+            }
+        ];
+
+        // --- RENDERIZADO AVANZADO DEL PERFIL ---
         function renderProfile() {
             const container = document.getElementById('tab-profile');
             
-            // 1. Construimos los párrafos de texto
-            const bioHTML = profileData.bio.map(p => `<p>${p}</p>`).join('');
-
-            // 2. Construimos las cajitas de estadísticas
-            const statsHTML = profileData.stats.map(s => `
-                <div class="stat-item">
-                    <div class="stat-number">${s.number}</div>
-                    <div class="stat-label">${s.label}</div>
+            // 1. Generar HTML de la Narrativa (Izquierda)
+            let narrativeHTML = narrativeData.map(chapter => `
+                <div id="${chapter.id}" class="narrative-section">
+                    <h2 style="border:none; margin-bottom:10px; color:var(--text-main); font-size:1.6rem;">${chapter.title}</h2>
+                    <div class="code-font" style="color:var(--accent); margin-bottom:20px;">${chapter.year}</div>
+                    <div class="narrative-text">${chapter.content}</div>
                 </div>
             `).join('');
 
-            // 3. Inyectamos todo el HTML estructurado
+            // 2. Generar HTML de la Timeline (Derecha)
+            let timelineHTML = narrativeData.map(chapter => `
+                <a class="timeline-nav-item" onclick="scrollToChapter('${chapter.id}')" id="nav-${chapter.id}">
+                    ${chapter.title}
+                    <div style="font-size:0.7em; opacity:0.6;">${chapter.year}</div>
+                </a>
+            `).join('');
+
+            // 3. Inyectar Estructura
             container.innerHTML = `
-                <h2>Profile & Background</h2>
-                
-                <div class="profile-container">
-                    <div class="profile-text">
-                        <div class="profile-bio">
-                            ${bioHTML}
+                <div class="narrative-container">
+                    <div class="narrative-content">
+                        <div style="margin-bottom:40px; border-bottom:1px solid var(--border); padding-bottom:20px;">
+                            <h1 style="font-size:2.5rem;">Pablo Mora Moreno</h1>
+                            <p class="code-font" style="color:var(--text-muted);">> PhD Candidate & Mechatronics Engineer</p>
                         </div>
+                        ${narrativeHTML}
                         
-                        <div class="stats-row">
-                            ${statsHTML}
+                        <div style="margin-top:50px; padding:20px; background:rgba(47,129,247,0.05); border-radius:8px; border:1px solid var(--accent);">
+                            <h3 style="color:#fff;">Ready to collaborate?</h3>
+                            <p>I am looking for opportunities within the EU's leading tech sectors.</p>
+                            <a href="mailto:tuemail@ejemplo.com" class="btn" style="margin-top:10px;">Contact Me</a>
                         </div>
                     </div>
 
-                    <div class="profile-photo-wrapper">
-                        <img src="${profileData.image}" alt="${profileData.name}" class="profile-photo">
-                    </div>
+                    <aside class="timeline-sticky">
+                        <div style="margin-bottom:20px; font-weight:700; color:#fff;">TIMELINE</div>
+                        ${timelineHTML}
+                    </aside>
                 </div>
             `;
+
+            // 4. INICIAR EL OBSERVADOR (Scrollspy Logic)
+            initScrollSpy();
+        }
+
+        // Función auxiliar para scroll suave al clicar en la timeline
+        function scrollToChapter(id) {
+            const element = document.getElementById(id);
+            if(element) {
+                // Scroll dentro del contenedor main-content, no del body
+                const main = document.querySelector('.main-content');
+                // Calculamos la posición relativa
+                main.scrollTo({
+                    top: element.offsetTop - 40, // -40 para dar un poco de aire arriba
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // --- LÓGICA DE SCROLLSPY MEJORADA ---
+        function initScrollSpy() {
+            // 1. Configuramos el "Ojo" del navegador
+            const observerOptions = {
+                root: document.querySelector('.main-content'), // Dónde hacemos scroll
+                
+                // TRUCO CLAVE: 'rootMargin' define una línea de disparo.
+                // '-40% 0px -60% 0px' significa: "Actívate cuando el elemento esté 
+                // entre el 40% superior y el 60% inferior de la pantalla".
+                // Básicamente, detecta lo que hay en el centro visual.
+                rootMargin: '-40% 0px -50% 0px', 
+                threshold: 0 // Con que toque esa zona central, vale.
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // A. ACTIVAR TEXTO
+                        // Quitamos la clase a todos
+                        document.querySelectorAll('.narrative-section').forEach(s => s.classList.remove('active-chapter'));
+                        // Se la ponemos al actual
+                        entry.target.classList.add('active-chapter');
+
+                        // B. ACTIVAR TIMELINE
+                        // Quitamos la clase active a todos los puntos
+                        document.querySelectorAll('.timeline-nav-item').forEach(t => t.classList.remove('active'));
+                        
+                        // Buscamos el punto correspondiente en la derecha
+                        const navItem = document.getElementById(`nav-${entry.target.id}`);
+                        if(navItem) {
+                            navItem.classList.add('active');
+                            
+                            // (Opcional) Hacer que el menú lateral también haga scroll si es muy largo
+                            // navItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // 2. Empezar a observar cada capítulo
+            narrativeData.forEach(chapter => {
+                const el = document.getElementById(chapter.id);
+                if(el) observer.observe(el);
+            });
         }
         // --- LOGIC: TAB SWITCHING ---
         // --- LOGIC: SIDEBAR & NAVIGATION ---
@@ -512,25 +731,25 @@
                 role: "Research Engineer in Electrical Drives",
                 company: "University of Málaga",
                 date: "Jan 2024 - Present",
-                desc: "Implemented embedded control algorithms on TI microcontrollers (C/C++) and estimated dynamic parameters using MATLAB/Python[cite: 74, 75]. Setting up a 9-phase electric drive test bed."
+                desc: "Implemented embedded control algorithms on TI microcontrollers (C/C++) and estimated dynamic parameters using MATLAB/Python. Setting up a 9-phase electric drive test bed."
             },
             {
                 role: "Systems Engineering Automotive",
                 company: "EVO Seville (Evolution Synergetique)",
                 date: "Mar 2023 - Jan 2024",
-                desc: "Developed/Simulated control algorithms (Simulink) for fuel cell hybrid electric vehicle powertrains in compliance with Automotive SPICE regulations[cite: 82]. Optimized balance between battery capacity, fuel cell, and cooling systems."
+                desc: "Developed/Simulated control algorithms (Simulink) for fuel cell hybrid electric vehicle powertrains in compliance with Automotive SPICE regulations. Optimized balance between battery capacity, fuel cell, and cooling systems."
             },
             {
                 role: "E-Powertrain Engineer",
                 company: "MART Málaga (Formula Student)",
                 date: "Sept 2020 - Sept 2024",
-                desc: "Developed powertrain for race cars. Designed 600V battery-powered 3-phase propulsion system. Programmed control algorithms in C for TI MCUs involving CAN, I2C, and SPI protocols[cite: 78, 79]."
+                desc: "Developed powertrain for race cars. Designed 600V battery-powered 3-phase propulsion system. Programmed control algorithms in C for TI MCUs involving CAN, I2C, and SPI protocols."
             },
             {
                 role: "Calibration Test Engineer",
                 company: "University of Málaga",
                 date: "Jul 2025 - Aug 2025",
-                desc: "Designed test bench to calibrate LC filters for railway substations. Automated frequency profiles to obtain experimental Bode diagrams[cite: 86, 87]."
+                desc: "Designed test bench to calibrate LC filters for railway substations. Automated frequency profiles to obtain experimental Bode diagrams."
             }
         ];
 
@@ -539,25 +758,25 @@
                 title: "48V Electric Drive",
                 type: "Personal Project",
                 tags: ["GaN", "C/C++", "MPC"],
-                desc: "Self-taught development of a 48V battery-powered 3-phase drive. Features sensorless MPC with Maximum Torque Per Ampere (MTPA) and Field Weakening, running on TI MCU[cite: 97]."
+                desc: "Self-taught development of a 48V battery-powered 3-phase drive. Features sensorless MPC with Maximum Torque Per Ampere (MTPA) and Field Weakening, running on TI MCU."
             },
             {
                 title: "High-Performance Servo Drive",
                 type: "Ongoing",
                 tags: ["STM32", "Robotics", "Hardware"],
-                desc: "6kW PMSM system with GaN converter and custom battery. Controlled by STM32, designed for high precision and power density in robotic articulations (125 cm³ package)[cite: 101, 102]."
+                desc: "6kW PMSM system with GaN converter and custom battery. Controlled by STM32, designed for high precision and power density in robotic articulations (125 cm³ package)."
             },
             {
                 title: "WiFi-Controlled Rover",
                 type: "Personal Project",
                 tags: ["IoT", "MATLAB", "Arduino"],
-                desc: "Rover controlled via WiFi/BLE using MATLAB/Simulink. Supports over-the-air code loading and system monitoring[cite: 99]."
+                desc: "Rover controlled via WiFi/BLE using MATLAB/Simulink. Supports over-the-air code loading and system monitoring."
             },
              {
                 title: "Fault Detection Algorithms",
                 type: "Research Scholarship",
                 tags: ["Signal Processing", "Python"],
-                desc: "Developed simulation-based techniques (Wavelet, Stockwell transforms) to detect faults in multiphase electric drives[cite: 84, 85]."
+                desc: "Developed simulation-based techniques (Wavelet, Stockwell transforms) to detect faults in multiphase electric drives."
             }
         ];
 
